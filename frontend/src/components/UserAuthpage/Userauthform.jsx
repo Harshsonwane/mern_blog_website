@@ -1,12 +1,12 @@
 import Inputbox from "../singin_inputbox/Inputbox";
 import googleIcon from "../../imgs/google.png"
 import { Link } from "react-router-dom";
-// import Animationwrapper from "../PageAnimation/Animationwrapper";
+import Animationwrapper from "../PageAnimation/Animationwrapper";
 
 const Userauthform = ({type}) => {
     return (
 
-        
+        <Animationwrapper keyValue={type}>
         <section className="h-cover flex items-center justify-center">
             <form className="w-[88%] max-w-[400px]">
                 <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
@@ -62,7 +62,7 @@ const Userauthform = ({type}) => {
 
             </form>
         </section> 
-        
+        </Animationwrapper>
     );
 };
 
