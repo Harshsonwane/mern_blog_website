@@ -4,6 +4,7 @@ import 'dotenv/config'; // Loads environment variables from a .env file into pro
 import mongoose from 'mongoose';
 import bcrypt  from 'bcrypt';
 import { nanoid } from 'nanoid';
+import jwt from 'jsonwebtoken'
 
 import User from './Schema/User.js';   //user mongo schema
 
@@ -28,6 +29,21 @@ mongoose.connect(process.env.DB_LOCATION, {
 }).catch((error) => {
     console.error('Error connecting to MongoDB:', error.message);
 });
+
+//formtae data to send
+
+const formatDatatoSend = (user) =>{
+
+    const access_token = jwt.sign({id: user._id},process.env.SECRET_ACCESS_KEY)
+
+    return {
+        access_token,
+        profileimg : user.personal_info.profile_img,
+        username : user.personal_info.username,
+        fullname : user.personal_info.fullname
+    }
+}
+
 
 //unique username generating to avoid error
 const generateUsername = async (email)=>{
@@ -66,9 +82,12 @@ server.post("/signup",(req,res)=>{
             personal_info:{fullname,email,password:hashed_password,username}
         }) 
 
+
+        //seniding datat to mongo
         user.save().then((u)=>{
-            return res.status(200).json({user:u})
+            return res.status(200).json(formatDatatoSend(u))
         })
+
         .catch(err=>{
             if(err.code==11000){
                 return res.status(500).json({"error":"Email already exits"})
@@ -76,9 +95,47 @@ server.post("/signup",(req,res)=>{
             return res.status(500).json({"error":err.message})
         })
      })
-    // return res.status(200).json({"status":"OKAY"})
-    
+    // return res.status(200).json({"status":"OKAY"})  
 })
+
+//sign in post request 
+
+server.post("/signin",(req , res)=>{
+    // console.log("your are going good")
+
+    let {email,password} = req.body;
+
+    User.findOne({"personal_info.email": email })
+    .then((user)=>{
+        if(!user ){
+            return res.status(403).json({"error":"Email not found"})
+        }
+        
+        //checking passord is correct or not 
+        bcrypt.compare(password, user.personal_info.password,(err,result)=>{
+
+            if(err){
+                return res.status(403).json({"error":"Incorrect validation"});
+            }
+
+            if(!result){
+                return res.status(403).json({"error":"password is incorrect"})
+            }else{
+                return res.status(200).json(formatDatatoSend(user))
+            }
+        })
+
+        // return res.json({"status":"Got user document"})
+    })
+    .catch(err=>{
+        console.log(err.message);
+        return res.status(500).json({"error":err.message})
+    })
+
+})
+
+
+
 
 // Start the server and listen on the specified port
 server.listen(PORT, () => {

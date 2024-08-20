@@ -4,3 +4,15 @@ we have used flaticon for icons
 read about Link in react 
 outlet used for react navigation routes for nested route
 read about props,usestate, 
+
+
+
+
+
+
+
+
+
+
+some command in node -> terminal 
+require('crypto').randomBytes(64).toString('hex'); to get hex code
