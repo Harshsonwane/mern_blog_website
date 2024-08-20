@@ -1,0 +1,6 @@
+front : npm run dev
+backend : node start || nodemon server
+we have used flaticon for icons 
+read about Link in react 
+outlet used for react navigation routes for nested route
+read about props,usestate, 

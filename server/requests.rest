@@ -1,0 +1,9 @@
+POST http://localhost:3000/signup
+Content-Type: application/json
+
+{
+    "fullname":"harsd",
+    "email":"daf@fa.com",
+    "password":"Hsfd@a3sdfa"
+    
+}
