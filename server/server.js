@@ -2,6 +2,10 @@
 import express from 'express';
 import 'dotenv/config'; // Loads environment variables from a .env file into process.env
 import mongoose from 'mongoose';
+import bcrypt  from 'bcrypt';
+import { nanoid } from 'nanoid';
+
+import User from './Schema/User.js';   //user mongo schema
 
 // Set the port number
 let PORT = 3000;
@@ -25,6 +29,15 @@ mongoose.connect(process.env.DB_LOCATION, {
     console.error('Error connecting to MongoDB:', error.message);
 });
 
+//unique username generating to avoid error
+const generateUsername = async (email)=>{
+    let username = email.split("@")[0];
+    let isUsernameNotUnique = await User.exists({"personal_info.username":username}).then((result)=>result);
+    isUsernameNotUnique ? username += nanoid().substring(0,5) : "";
+    return username;
+}
+
+
 //making post request 
 server.post("/signup",(req,res)=>{
     
@@ -43,10 +56,28 @@ server.post("/signup",(req,res)=>{
     if(!passwordRegex.test(password)){
         return res.status(403).json({"error":"password should be 6 to 20 charachter long with number special character and capital letter"})
     }
-    return res.status(200).json({"status":"OKAY"})
-    
-    
 
+     bcrypt.hash(password,10, async (err,hashed_password)=>{
+        
+        let username = await generateUsername(email);
+
+        //in database User from schema
+        let user = new User({
+            personal_info:{fullname,email,password:hashed_password,username}
+        }) 
+
+        user.save().then((u)=>{
+            return res.status(200).json({user:u})
+        })
+        .catch(err=>{
+            if(err.code==11000){
+                return res.status(500).json({"error":"Email already exits"})
+            }
+            return res.status(500).json({"error":err.message})
+        })
+     })
+    // return res.status(200).json({"status":"OKAY"})
+    
 })
 
 // Start the server and listen on the specified port

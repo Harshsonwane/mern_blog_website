@@ -3,7 +3,7 @@ Content-Type: application/json
 
 {
     "fullname":"harsd",
-    "email":"daf@fa.com",
-    "password":"Hsfd@a3sdfa"
+    "email":"daf@fsa.com",
+    "password":"Hfds@3sdfa"
     
 }
