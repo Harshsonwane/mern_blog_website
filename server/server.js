@@ -10,7 +10,7 @@ import cors from 'cors';
 import User from './Schema/User.js';   //user mongo schema
 
 // Set the port number
-let PORT = process.env || 3005;
+let PORT = process.env.PORT || 3005;
 
 //email and password Regex for validation
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
