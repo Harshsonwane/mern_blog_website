@@ -4,12 +4,13 @@ import 'dotenv/config'; // Loads environment variables from a .env file into pro
 import mongoose from 'mongoose';
 import bcrypt  from 'bcrypt';
 import { nanoid } from 'nanoid';
-import jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken';
+import cors from 'cors';
 
 import User from './Schema/User.js';   //user mongo schema
 
 // Set the port number
-let PORT = 3000;
+let PORT = process.env || 3005;
 
 //email and password Regex for validation
 let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // regex for email
@@ -19,7 +20,8 @@ let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // regex for pass
 const server = express();
 
 //middleware for json file handling
-server.use(express.json())
+server.use(express.json());
+server.use(cors())
 
 // Connect to MongoDB using the connection string from the environment variables
 mongoose.connect(process.env.DB_LOCATION, {
@@ -58,7 +60,7 @@ const generateUsername = async (email)=>{
 server.post("/signup",(req,res)=>{
     
     let {fullname,email,password} = req.body;
-    console.log(req.body);
+    // console.log(req.body);
     //validation data from front-end
     if(fullname.length<3){
         return res.status(403).json({"error":"fullname must be > 3"})
@@ -133,9 +135,6 @@ server.post("/signin",(req , res)=>{
     })
 
 })
-
-
-
 
 // Start the server and listen on the specified port
 server.listen(PORT, () => {

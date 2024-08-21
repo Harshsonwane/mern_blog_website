@@ -7,9 +7,9 @@ read about props,usestate,
 for animation we use frammermotion -> framer-motion
 
 
-
-
-
+//connecting page to user with useref  react hook  
+//read ref in react hook used for refenece to take use to html tag 
+toster and toast used for popups 
 
 
 some command in node -> terminal 
